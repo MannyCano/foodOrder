@@ -1,13 +1,16 @@
-before_install:
-- openssl aes-256-cbc -K $encrypted_db2095f63ba3_key -iv $encrypted_db2095f63ba3_iv
-  -in deploy_rsa.enc -out deploy_rsa -d
-- eval "$(ssh-agent -s)"
-- chmod 600 deploy_rsa
-- ssh-add deploy_rsa
-
-deploy:
+--- 
+before_install: 
+  - "openssl aes-256-cbc -K $encrypted_db2095f63ba3_key -iv $encrypted_db2095f63ba3_iv -in deploy_rsa.enc -out deploy_rsa -d"
+  - "eval \"$(ssh-agent -s)\""
+  - "chmod 600 deploy_rsa"
+  - "ssh-add deploy_rsa"
+deploy: 
   provider: script
+  script: "ssh ec2-user@18.207.219.204 'bash ./deploy.sh'"
   skip_cleanup: true
-  script: ssh ec2-user@18.207.219.204 'bash ./deploy.sh'
-  on:
+  true: 
     branch: master
+language: php
+php: 
+  - 7.4
+
